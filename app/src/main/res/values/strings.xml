@@ -13,10 +13,16 @@
     <string name="title_activity_detail">Details</string>
     <string name="title_activity_settings">Settings</string>
     <string name="pref_location_key">location</string>
+    <string name="pref_unit_key">units</string>
 
     <!-- Label for the location key in pre [CHAR LIMIT=30]-->
-    <string name="pref_location_label" translatable="false">location</string>
+    <string name="pref_location_label" >location</string>
     <string name="pref_location_default" translatable="false">94043</string>
 
+    <string name="pref_unit_label">Units</string>
+    <string name="pref_unit_default" translatable="false">metric</string>
+
+    <string name="pref_unit_metric">metric</string>
+    <string name="pref_unit_imperial">imperial</string>
 
 </resources>
