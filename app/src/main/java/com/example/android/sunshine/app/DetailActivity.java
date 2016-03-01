@@ -19,12 +19,16 @@ package com.example.android.sunshine.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.support.v7.widget.ShareActionProvider;
 import android.widget.TextView;
 
 public class DetailActivity extends ActionBarActivity {
@@ -69,7 +73,13 @@ public class DetailActivity extends ActionBarActivity {
      */
     public static class DetailsFragment extends Fragment {
 
+        private static final String LOG_TAG = DetailsFragment.class.getSimpleName();
+
+        private static final String FORECAST_SHARE_HASHTAG = " #SunshineApp";
+        private String mForeCast;
+
         public DetailsFragment() {
+            setHasOptionsMenu(true);
         }
 
         @Override
@@ -78,12 +88,35 @@ public class DetailActivity extends ActionBarActivity {
             Intent intent = getActivity().getIntent();
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-                String forcast = intent.getStringExtra(Intent.EXTRA_TEXT);
+                mForeCast = intent.getStringExtra(Intent.EXTRA_TEXT);
                 TextView textView = (TextView) rootView.findViewById(R.id.detail_text);
-                textView.setText(forcast);
+                textView.setText(mForeCast);
             }
 
             return rootView;
         }
+
+        private Intent createShareForeCastIntent() {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, mForeCast + FORECAST_SHARE_HASHTAG);
+            return shareIntent;
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            inflater.inflate(R.menu.detailfragment, menu);
+            MenuItem item = menu.findItem(R.id.action_share);
+            ShareActionProvider mShare = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+            if(mShare != null) {
+                mShare.setShareIntent(createShareForeCastIntent());
+            }else {
+                Log.d(LOG_TAG, "share action is null?");
+            }
+
+        }
+
     }
 }
