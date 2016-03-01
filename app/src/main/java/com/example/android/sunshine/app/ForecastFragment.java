@@ -1,9 +1,11 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -58,8 +60,7 @@ public class ForecastFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item)  {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask task = new FetchWeatherTask();
-            task.execute("94043");
+            updateWeather();
             return true;
         }
 
@@ -72,24 +73,11 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-        String[] forecastData = {
-                "Today - Sunny - 88/63",
-                "Tomorrow - Foggy - 88/63",
-                "Weds - Cloudy - 82/53",
-                "Thurs - Asteroids - 88/53",
-                "Fri - Sunny - 80/63",
-                "Sat - HELP - 88/63",
-                "Sun - Sunny - 88/63",
-        };
-
-        List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastData));
-
         adapter = new ArrayAdapter<String>(
                 getActivity(),
                 R.layout.list_item_forecast,
                 R.id.list_item_forecast_textview,
-                weekForecast);
+                new ArrayList<String>());
 
         ListView lv = (ListView) rootView.findViewById(R.id.listview_forecast);
         lv.setAdapter(adapter);
@@ -107,6 +95,19 @@ public class ForecastFragment extends Fragment {
         return rootView;
     }
 
+    public void updateWeather() {
+        FetchWeatherTask task = new FetchWeatherTask();
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = pref.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        task.execute(location);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
 
 
 
@@ -136,7 +137,7 @@ public class ForecastFragment extends Fragment {
                         .appendPath("daily")
                         .appendQueryParameter("q", params[0])
                         .appendQueryParameter("mode", "json")
-                        .appendQueryParameter("units", "metric")
+                        .appendQueryParameter("units", "imperial")
                         .appendQueryParameter("cnt", "7")
                         .appendQueryParameter("appId", BuildConfig.OPEN_WEATHER_MAP_API_KEY);
 
