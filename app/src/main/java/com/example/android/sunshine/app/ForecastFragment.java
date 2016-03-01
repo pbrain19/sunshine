@@ -99,7 +99,7 @@ public class ForecastFragment extends Fragment {
         FetchWeatherTask task = new FetchWeatherTask();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String location = pref.getString(getString(R.string.pref_location_key),
-                getString(R.string.pref_location_default)); 
+                getString(R.string.pref_location_default));
         task.execute(location);
     }
 
