@@ -138,7 +138,7 @@ public class ForecastFragment extends Fragment {
                         .appendQueryParameter("mode", "json")
                         .appendQueryParameter("units", "metric")
                         .appendQueryParameter("cnt", "7")
-                        .appendQueryParameter("appId", "74388b67a43812a89bd2d44368808022");
+                        .appendQueryParameter("appId", BuildConfig.OPEN_WEATHER_MAP_API_KEY);
 
                 String urlString = builder.build().toString();
                 URL url = new URL(urlString);
